@@ -18,7 +18,11 @@ module Paranoia
     end
 
     def only_deleted
-      with_deleted.where.not(paranoia_column => nil)
+      if paranoia_deleted_value
+        with_deleted.where(paranoia_column => paranoia_deleted_value)
+      else
+        with_deleted.where.not(paranoia_column => nil)
+      end
     end
     alias :deleted :only_deleted
 
