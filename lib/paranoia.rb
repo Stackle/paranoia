@@ -99,10 +99,18 @@ module Paranoia
     # Let's not touch it if it's frozen.
     unless self.frozen?
       if with_transaction
-        with_transaction_returning_status { touch(paranoia_column) }
+        with_transaction_returning_status { mark_as_deleted(paranoia_column) }
       else
-        touch(paranoia_column)
+        mark_as_deleted(paranoia_column)
       end
+    end
+  end
+
+  def mark_as_deleted(paranoia_column)
+    if paranoia_deleted_value
+      self.paranoia_column = paranoia_deleted_value
+    else
+      touch(paranoia_column)
     end
   end
 
