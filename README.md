@@ -6,7 +6,7 @@ You would use either plugin / gem if you wished that when you called `destroy` o
 
 If you wish to actually destroy an object you may call `really_destroy!`. **WARNING**: This will also *really destroy* all `dependent: destroy` records, so please aim this method away from face when using.**
 
-If a record has `has_many` associations defined AND those associations have `dependent: :destroy` set on them, then they will also be soft-deleted if `acts_as_paranoid` is set,  otherwise the normal destroy will be called. 
+If a record has `has_many` associations defined AND those associations have `dependent: :destroy` set on them, then they will also be soft-deleted if `acts_as_paranoid` is set,  otherwise the normal destroy will be called.
 
 ## Installation & Usage
 
@@ -75,9 +75,9 @@ Hey presto, it's there! Calling `destroy` will now set the `deleted_at` column:
 ``` ruby
 >> client.deleted_at
 # => nil
->> client.destroy 
+>> client.destroy
 # => client
->> client.deleted_at 
+>> client.deleted_at
 # => [current timestamp]
 ```
 
@@ -111,6 +111,16 @@ If you want to use a column other than `deleted_at`, you can pass it as an optio
 ``` ruby
 class Client < ActiveRecord::Base
   acts_as_paranoid column: :destroyed_at
+
+  ...
+end
+```
+
+or if you want to check whether record is deleted by specific value other than `nil`, you can pass `deleted_value` as an option:
+
+``` ruby
+class Client < ActiveRecord::Base
+  acts_as_paranoid column: :boolean_column, deleted_value: true
 
   ...
 end

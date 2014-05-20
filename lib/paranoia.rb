@@ -145,10 +145,15 @@ class ActiveRecord::Base
     end
 
     include Paranoia
-    class_attribute :paranoia_column
+    class_attribute :paranoia_column, :paranoia_deleted_value
 
     self.paranoia_column = options[:column] || :deleted_at
-    default_scope { where(paranoia_column => nil) }
+    self.paranoia_deleted_value = options[:deleted_value]
+    if paranoia_deleted_value
+      default_scope { where.not(paranoia_column => paranoia_deleted_value) }
+    else
+      default_scope { where(paranoia_column => nil) }
+    end
 
     before_restore {
       self.class.notify_observers(:before_restore, self) if self.class.respond_to?(:notify_observers)
